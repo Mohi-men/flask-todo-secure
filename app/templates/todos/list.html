@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}My Todos - Flask Todo{% endblock %}
+{% block head %}
+  {% assets "todo_css" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {% endassets %}
+{% endblock %}
+{% block content %}
+<div class="todo-container">
+  <h2>Your Todos</h2>
+
+  <!-- Add new task -->
+  <form method="POST">
+    <input type="text" name="content" placeholder="New task">
+    <button type="submit">Add</button>
+  </form>
+
+  <!-- ✅ Filter buttons -->
+  <div class="filters">
+    <a href="{{ url_for('todo.list_tasks', filter='all') }}" class="{% if filter_status=='all' %}active{% endif %}">All</a>
+    <a href="{{ url_for('todo.list_tasks', filter='completed') }}" class="{% if filter_status=='completed' %}active{% endif %}">Completed</a>
+    <a href="{{ url_for('todo.list_tasks', filter='incomplete') }}" class="{% if filter_status=='incomplete' %}active{% endif %}">Incomplete</a>
+  </div>
+
+  <!-- Task list -->
+  <ul>
+    {% for task in tasks %}
+      <li class="{% if task.completed %}completed{% endif %}">
+        {{ task.content }}
+        <span>
+          <a href="{{ url_for('todo.edit_task', task_id=task.id) }}">Edit</a>
+          <form method="POST" action="{{ url_for('todo.delete_task', task_id=task.id) }}" style="display:inline;">
+            <button type="submit">Delete</button>
+          </form>
+        </span>
+      </li>
+    {% else %}
+      <li>No tasks found.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

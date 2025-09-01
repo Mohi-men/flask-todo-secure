@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Register - Flask Todo{% endblock %}
+{% block head %}
+  {% assets "auth_css" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {% endassets %}
+{% endblock %}
+{% block content %}
+<div class="auth-form">
+  <h2>Register</h2>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <label>{{ form.username.label }}</label>
+    {{ form.username() }}
+    <label>{{ form.email.label }}</label>
+    {{ form.email() }}
+    <label>{{ form.password.label }}</label>
+    {{ form.password() }}
+    <label>{{ form.confirm.label }}</label>
+    {{ form.confirm() }}
+    {{ form.submit() }}
+  </form>
+</div>
+{% endblock %}

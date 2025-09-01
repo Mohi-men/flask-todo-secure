@@ -1,0 +1,43 @@
+@import "../variables";
+
+.auth-form {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: $box-shadow;
+
+  h2 {
+    color: $heading-color;   // ✅ consistent across sections
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    margin-top: 10px;
+    text-align: left;
+    color: $text-color;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: $border-radius;
+  }
+
+  button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 10px;
+    @include button-style($primary-color, $primary-hover-color);
+  }
+
+  .error {
+    color: $danger-color;
+    margin-top: 10px;
+    text-align: center;
+  }
+}

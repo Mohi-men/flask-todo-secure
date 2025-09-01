@@ -1,0 +1,52 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg-info/
+*.egg
+*.log
+
+# === Virtual Environment ===
+.venv/
+env/
+venv/
+ENV/
+
+# === Flask / Instance ===
+instance/
+*.db
+*.sqlite3
+
+# === Alembic / Migrations Cache ===
+migrations/versions/__pycache__/
+migrations/versions/*.pyc
+
+# === Environment Variables ===
+.env
+*.env
+
+# === IDE / Editor ===
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === OS Files ===
+.DS_Store
+Thumbs.db
+
+# === SCSS / CSS ===
+# Ignore raw compiled artifacts except final minified CSS
+app/static/css/*.css
+!app/static/css/*.min.css
+
+# === Node / NPM (if using sass globally) ===
+node_modules/
+
+# === Coverage / Testing ===
+htmlcov/
+.coverage
+.pytest_cache/

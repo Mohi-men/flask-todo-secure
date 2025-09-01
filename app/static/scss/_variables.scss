@@ -1,0 +1,40 @@
+// === Colors ===
+$primary-color: #1a90df;
+$primary-hover-color: darken($primary-color, 10%);
+
+$success-color: #28a745;
+$success-hover-color: darken($success-color, 10%);
+
+$danger-color: #dc3545;
+$danger-hover-color: darken($danger-color, 10%);
+
+$info-color: #17a2b8;
+$info-hover-color: darken($info-color, 10%);
+
+$bg-color: #f4f4f4;
+$text-color: #333;
+
+// ✅ New heading color
+$heading-color: #6f42c1; // a nice purple (Bootstrap style)
+
+// === Typography ===
+$font-stack: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+
+// === Spacing ===
+$container-max-width: 800px;
+$border-radius: 5px;
+$box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+// === Mixins ===
+@mixin button-style($bg, $hover-bg) {
+  background-color: $bg;
+  color: #fff;
+  border: none;
+  border-radius: $border-radius;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: $hover-bg;
+  }
+}

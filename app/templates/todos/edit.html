@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Edit - Flask Todo{% endblock %}
+{% block head %}
+  {% assets "todo_css" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {% endassets %}
+{% endblock %}
+{% block content %}
+<div class="todo-container">
+  <h2>Edit Task</h2>
+  <form method="POST">
+    <input type="text" name="content" value="{{ task.content }}">
+    <label>
+      <input type="checkbox" name="completed" {% if task.completed %}checked{% endif %}>
+      Completed
+    </label>
+    <button type="submit">Update</button>
+  </form>
+  <a href="{{ url_for('todo.list_tasks') }}">Back</a>
+</div>
+{% endblock %}
