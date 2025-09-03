@@ -1,42 +1,153 @@
 {% extends "base.html" %}
 {% block title %}My Todos - Flask Todo{% endblock %}
+
 {% block head %}
   {% assets "todo_css" %}
     <link rel="stylesheet" href="{{ ASSET_URL }}">
   {% endassets %}
 {% endblock %}
+
 {% block content %}
 <div class="todo-container">
   <h2>Your Todos</h2>
 
-  <!-- Add new task -->
-  <form method="POST">
-    <input type="text" name="content" placeholder="New task">
+  <!-- ✅ Add Task Form -->
+  <form method="POST" class="add-task-form">
+    <input type="text" name="content" placeholder="New task" required>
+    <input type="date" name="deadline">
+    <select name="priority">
+      <option value="high">High</option>
+      <option value="medium" selected>Medium</option>
+      <option value="low">Low</option>
+    </select>
     <button type="submit">Add</button>
   </form>
 
-  <!-- ✅ Filter buttons -->
+  <!-- ✅ Filters -->
   <div class="filters">
+    <!-- Status -->
     <a href="{{ url_for('todo.list_tasks', filter='all') }}" class="{% if filter_status=='all' %}active{% endif %}">All</a>
     <a href="{{ url_for('todo.list_tasks', filter='completed') }}" class="{% if filter_status=='completed' %}active{% endif %}">Completed</a>
     <a href="{{ url_for('todo.list_tasks', filter='incomplete') }}" class="{% if filter_status=='incomplete' %}active{% endif %}">Incomplete</a>
+
+    <!-- Priority -->
+    <a href="{{ url_for('todo.list_tasks', priority='high') }}" class="{% if request.args.get('priority')=='high' %}active{% endif %}">High</a>
+    <a href="{{ url_for('todo.list_tasks', priority='medium') }}" class="{% if request.args.get('priority')=='medium' %}active{% endif %}">Medium</a>
+    <a href="{{ url_for('todo.list_tasks', priority='low') }}" class="{% if request.args.get('priority')=='low' %}active{% endif %}">Low</a>
+
+    <!-- Date range -->
+    <form method="get" class="date-filter-form">
+      <input type="date" name="start_date" value="{{ request.args.get('start_date', '') }}">
+      <input type="date" name="end_date" value="{{ request.args.get('end_date', '') }}">
+      <button type="submit">Filter by Date</button>
+    </form>
   </div>
 
-  <!-- Task list -->
-  <ul>
+  <!-- ✅ Task List -->
+  <ul class="task-list">
     {% for task in tasks %}
       <li class="{% if task.completed %}completed{% endif %}">
-        {{ task.content }}
-        <span>
+        <div class="task-info">
+          <span class="task-content">{{ task.content }}</span>
+          {% if task.deadline %}
+            <span class="task-deadline">Due: {{ task.deadline.strftime('%Y-%m-%d') }}</span>
+          {% endif %}
+          <span class="task-priority {{ task.priority }}">
+            {{ task.priority|capitalize }}
+          </span>
+        </div>
+        <div class="task-actions">
           <a href="{{ url_for('todo.edit_task', task_id=task.id) }}">Edit</a>
-          <form method="POST" action="{{ url_for('todo.delete_task', task_id=task.id) }}" style="display:inline;">
-            <button type="submit">Delete</button>
+
+          <!-- ✅ Toggle button -->
+          <form method="POST" action="{{ url_for('todo.toggle_task', task_id=task.id) }}" style="display:inline;">
+            <button type="submit" class="toggle-btn">
+              {% if task.completed %}Unmark{% else %}Mark Done{% endif %}
+            </button>
           </form>
-        </span>
+
+          <!-- ❌ Delete button -->
+          <form method="POST" action="{{ url_for('todo.delete_task', task_id=task.id) }}" style="display:inline;">
+            <button type="submit" class="delete-btn">Delete</button>
+          </form>
+        </div>
       </li>
     {% else %}
       <li>No tasks found.</li>
     {% endfor %}
   </ul>
 </div>
+
+<!-- ✅ Floating AI Chat Button -->
+<div id="chat-toggle" class="chat-toggle" onclick="toggleChat()">💬</div>
+
+<!-- ✅ AI Chat Popup -->
+<div id="chat-popup" class="chat-popup">
+  <div class="chat-header">
+    <span>AI Task Assistant</span>
+    <button onclick="toggleChat()">✖</button>
+  </div>
+  <div class="chat-body" id="chat-body">
+    <!-- messages will append here -->
+  </div>
+  <div class="chat-input">
+    <textarea id="query" placeholder="Type your question..."></textarea>
+    <button onclick="askAI()">Send</button>
+  </div>
+</div>
+
+<script>
+function toggleChat() {
+  document.getElementById("chat-popup").classList.toggle("open");
+}
+
+async function askAI() {
+  const queryBox = document.getElementById("query");
+  const query = queryBox.value.trim();
+  if (!query) return;
+
+  // Add user message to history
+  addMessage(query, "user");
+  queryBox.value = "";
+
+  try {
+    const res = await fetch("/ai/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({query})
+    });
+
+    const data = await res.json();
+
+    // Add AI response
+    let html = `<p>${data.answer}</p>`;
+    if (data.tasks) {
+      html += `<table class="ai-table">
+        <tr><th>Task</th><th>Priority</th><th>Deadline</th><th>Status</th></tr>`;
+      data.tasks.forEach(t => {
+        let status = t.completed ? "✅ Completed" : "❌ Incomplete";
+        html += `<tr>
+          <td>${t.content}</td>
+          <td class="priority ${t.priority}">${t.priority}</td>
+          <td>${t.deadline || "-"}</td>
+          <td>${status}</td>
+        </tr>`;
+      });
+      html += `</table>`;
+    }
+    addMessage(html, "ai");
+  } catch (err) {
+    addMessage("Error: " + err, "ai");
+  }
+}
+
+function addMessage(content, sender) {
+  const body = document.getElementById("chat-body");
+  const msg = document.createElement("div");
+  msg.className = `chat-message ${sender}`;
+  msg.innerHTML = content;
+  body.appendChild(msg);
+  body.scrollTop = body.scrollHeight;
+}
+</script>
 {% endblock %}

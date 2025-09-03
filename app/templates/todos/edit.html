@@ -1,21 +1,40 @@
 {% extends "base.html" %}
-{% block title %}Edit - Flask Todo{% endblock %}
+{% block title %}Edit Task - Flask Todo{% endblock %}
+
 {% block head %}
-  {% assets "todo_css" %}
+  {% assets "edit_css" %}
     <link rel="stylesheet" href="{{ ASSET_URL }}">
   {% endassets %}
 {% endblock %}
+
 {% block content %}
 <div class="todo-container">
   <h2>Edit Task</h2>
-  <form method="POST">
-    <input type="text" name="content" value="{{ task.content }}">
-    <label>
+
+  <form method="POST" class="edit-task-form">
+    <!-- Task content -->
+    <input type="text" name="content" value="{{ task.content }}" required>
+
+    <!-- Deadline -->
+    <input type="date" name="deadline"
+           value="{{ task.deadline.strftime('%Y-%m-%d') if task.deadline else '' }}">
+
+    <!-- Priority -->
+    <select name="priority">
+      <option value="high" {% if task.priority == 'high' %}selected{% endif %}>High</option>
+      <option value="medium" {% if task.priority == 'medium' %}selected{% endif %}>Medium</option>
+      <option value="low" {% if task.priority == 'low' %}selected{% endif %}>Low</option>
+    </select>
+
+    <!-- Completed toggle -->
+    <label class="completed-check">
       <input type="checkbox" name="completed" {% if task.completed %}checked{% endif %}>
       Completed
     </label>
+
+    <!-- Buttons -->
     <button type="submit">Update</button>
+    <a href="{{ url_for('todo.list_tasks') }}" class="cancel-btn">Cancel</a>
   </form>
-  <a href="{{ url_for('todo.list_tasks') }}">Back</a>
 </div>
 {% endblock %}

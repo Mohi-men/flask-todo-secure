@@ -9,24 +9,27 @@
   box-shadow: $box-shadow;
 
   h2 {
-    color: $heading-color;   // ✅ use new variable
+    color: $heading-color;
     margin-bottom: 20px;
   }
 
-  form {
+  /* ✅ Add Task Form */
+  .add-task-form {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
 
-    input {
-      flex: 1;
+    input, select {
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: $border-radius;
     }
 
+    input[type="text"] { flex: 2; }
+    input[type="date"], select { flex: 1; }
+
     button {
-      padding: 10px 20px;
+      flex: 1;
       @include button-style($success-color, $success-hover-color);
     }
   }
@@ -35,21 +38,37 @@
   .filters {
     margin-bottom: 20px;
 
-    a {
+    a, button {
       display: inline-block;
-      margin-right: 10px;
       padding: 6px 12px;
-      text-decoration: none;
+      margin-right: 8px;
       border-radius: $border-radius;
-      @include button-style($primary-color, $primary-hover-color);
+      text-decoration: none;
+      font-weight: bold;
+      @include button-style($info-color, $info-hover-color);
 
       &.active {
         background-color: $success-color;
+        color: #fff;
+      }
+    }
+
+    .date-filter-form {
+      display: inline-block;
+
+      input {
+        padding: 5px;
+        margin-right: 5px;
+      }
+
+      button {
+        @include button-style($primary-color, $primary-hover-color);
       }
     }
   }
 
-  ul {
+  /* ✅ Task List */
+  .task-list {
     list-style: none;
     padding: 0;
 
@@ -57,32 +76,226 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px;
+      padding: 12px;
       border-bottom: 1px solid #ddd;
 
-      &.completed {
+      &.completed .task-content {
         text-decoration: line-through;
         color: #888;
       }
 
-      a {
-        color: $primary-color;
-        margin-right: 10px;
-        text-decoration: none;
+      .task-info {
+        display: flex;
+        flex-direction: column;
 
-        &:hover {
-          color: $primary-hover-color;
+        .task-deadline {
+          font-size: 0.85rem;
+          color: #666;
+        }
+
+        /* Priority Badges */
+        .task-priority {
+          display: inline-block;
+          padding: 4px 10px;
+          border-radius: 12px;
+          font-size: 0.85rem;
+          font-weight: bold;
+          margin-top: 5px;
+
+          &.high {
+            background-color: $danger-color; // 🔴 red
+            color: #fff;
+          }
+          &.medium {
+            background-color: #f0ad4e; // 🟡 orange/yellow
+            color: #fff;
+          }
+          &.low {
+            background-color: $success-color; // 🟢 green
+            color: #fff;
+          }
         }
       }
 
-      form {
-        display: inline;
+      .task-actions {
+        a, button {
+          margin-left: 10px;
+          font-size: 0.9rem;
+          border-radius: $border-radius;
+          cursor: pointer;
+        }
 
-        button {
-          padding: 5px 10px;
+        a {
+          color: $primary-color;
+
+          &:hover {
+            color: $primary-hover-color;
+          }
+        }
+
+        /* ✅ Toggle button (blue) */
+        .toggle-btn {
+          @include button-style($info-color, $info-hover-color);
+        }
+
+        /* ❌ Delete button (red) */
+        .delete-btn {
           @include button-style($danger-color, $danger-hover-color);
         }
       }
     }
+  }
+}
+
+/* ✅ Floating chat toggle button */
+.chat-toggle {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background-color: $primary-color;
+  color: #fff;
+  font-size: 1.5rem;
+  padding: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: $box-shadow;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: $primary-hover-color;
+  }
+}
+
+/* ✅ Chat popup */
+.chat-popup {
+  position: fixed;
+  bottom: 90px;
+  right: 25px;
+  width: 350px;
+  max-height: 500px;
+  background: #fff;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+
+  &.open { display: flex; }
+}
+
+.chat-header {
+  background-color: $primary-color;
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+}
+
+.chat-body {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+  background: $bg-color;
+
+  .chat-message {
+    margin: 8px 0;
+    padding: 8px 12px;
+    border-radius: $border-radius;
+    clear: both;
+    word-wrap: break-word;
+
+    &.user {
+      background: $success-color;
+      color: #fff;
+      margin-left: auto;
+      max-width: 80%;
+    }
+    &.ai {
+      background: #fff;
+      border: 1px solid #ddd;
+      margin-right: auto;
+      width: 100%;   /* allow table to fit neatly */
+      max-width: 100%;
+      padding: 8px;
+    }
+  }
+}
+
+.chat-input {
+  display: flex;
+  border-top: 1px solid #ddd;
+
+  textarea {
+    flex: 1;
+    resize: none;
+    padding: 10px;
+    border: none;
+    font-family: inherit;
+    font-size: 0.9rem;
+  }
+
+  button {
+    @include button-style($success-color, $success-hover-color);
+    border-radius: 0;
+  }
+}
+
+/* ✅ AI Table inside chat */
+.ai-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 0.85rem;
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 6px;
+    text-align: left;
+    word-break: break-word;
+  }
+
+  th {
+    background-color: $primary-color;
+    color: #fff;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .priority.high { color: $danger-color; font-weight: bold; }
+  .priority.medium { color: #f0ad4e; font-weight: bold; }
+  .priority.low { color: $success-color; font-weight: bold; }
+}
+
+/* ✅ Responsive */
+@media (max-width: 600px) {
+  .todo-container {
+    margin: 20px;
+    padding: 15px;
+    h2 { font-size: 1.5rem; } /* Slightly smaller heading */    
+    .add-task-form {
+      flex-direction: column;
+      input, select, button { flex: none; width: 100%; }
+      button { margin-top: 10px; }
+    }
+    .filters a, .filters button { margin-bottom: 5px; }
+    .task-list li { flex-direction: column; align-items: flex-start; }
+    .task-actions { margin-top: 10px; }
+  } 
+  .chat-popup {
+    width: 90%;
+    right: 5%;
+    bottom: 80px;
+    max-height: 60%;
   }
 }

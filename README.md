@@ -3,8 +3,10 @@
 A full-stack **Todo list application** built with **Flask**, featuring:
 
 - User authentication (register, login, logout)  
-- Task management (create, read, update, delete)  
-- Filtering by **completed / incomplete / all**  
+- Task management (create, read, update, delete, toggle complete/incomplete)  
+- Task priority (**high / medium / low**) and deadlines  
+- Filtering by **completed / incomplete / priority / date ranges**  
+- AI assistant with **local embeddings (SentenceTransformers + FAISS)** to query tasks in natural language  
 - Flash messages for success & errors  
 - SCSS support with **Flask-Assets** (modular, per-blueprint styles)  
 - Blueprints for a clean and scalable project structure  
@@ -26,6 +28,9 @@ flask_todo/
 │  │   └─ forms.py
 │  ├─ todo/                # Todo blueprint
 │  │   ├─ routes.py
+│  ├─ ai/                  # AI assistant blueprint (RAG)
+│  │   ├─ rag.py           # FAISS + SentenceTransformers
+│  │   └─ routes.py        # AI chat endpoint
 │  ├─ main/                # Main blueprint (homepage, base)
 │  ├─ templates/           # Jinja2 templates
 │  │   ├─ base.html
@@ -52,7 +57,11 @@ flask_todo/
 
 - 🔑 **Authentication** — register/login/logout with secure password hashing  
 - 📝 **Todo CRUD** — add, edit, delete, and toggle tasks  
-- 🔍 **Filtering** — view completed, incomplete, or all tasks  
+- 🎯 **Priority & Deadline** — assign deadlines and priorities (High, Medium, Low)  
+- 🔍 **Filtering** — view completed/incomplete tasks, filter by priority, or by date (today, tomorrow, this week, next week, this month)  
+- 🤖 **AI Assistant** — ask natural language queries like *"Show me my incomplete tasks this week"*  
+  - Powered by **SentenceTransformers + FAISS** (local embeddings, no OpenAI quota needed)  
+  - Results displayed as a **styled table** inside the AI chat popup  
 - 🎨 **Styling** — modular SCSS per blueprint (`auth.scss`, `todo.scss`, `main.scss`)  
 - ⚡ **Flash messages** — success, error, and info feedback  
 - 🗄️ **SQLite with SQLAlchemy** + migrations via Alembic  
@@ -112,7 +121,8 @@ They are compiled automatically with **Flask-Assets** into `app/static/css/`.
 Bundles:
 - `main.scss` → `main.min.css` (navbar, flash, global)
 - `auth.scss` → `auth.min.css` (login/register pages)
-- `todo.scss` → `todo.min.css` (todo list pages)
+- `todo.scss` → `todo.min.css` (todo list pages, AI chat styles)
+- `edit.scss` → `edit.min.css` (edit task pages)
 
 ---
 
@@ -136,6 +146,9 @@ Bundles:
 ### Todo List – Incomplete Tasks
 ![Incomplete Tasks](docs/filter-incom-ss.png)
 
+### AI Chat Assistant
+![AI Chat](docs/ai-chat-ss.png)
+
 ---
 
 ## 🛠 Tech Stack
@@ -146,17 +159,21 @@ Bundles:
 - [Flask-Login](https://flask-login.readthedocs.io/) — session management  
 - [Flask-Assets](https://flask-assets.readthedocs.io/) — SCSS/CSS bundling  
 - [WTForms](https://wtforms.readthedocs.io/) — form handling  
+- [SentenceTransformers](https://www.sbert.net/) — local embeddings for AI assistant  
+- [FAISS](https://github.com/facebookresearch/faiss) — vector search backend  
 
 ---
 
 ## 📌 Future Improvements
 
 - 🌙 Dark mode toggle  
-- 🔍 Search tasks by keyword  
-- 📱 Responsive navbar (mobile friendly)  
+- 🔍 Full-text search in tasks  
+- 📱 Responsive navbar and chat UI (mobile friendly)  
 - 📡 JSON API with JWT authentication  
+- 📊 AI chat history stored in DB for persistence  
 
 ---
 
 ## 📝 License
+
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

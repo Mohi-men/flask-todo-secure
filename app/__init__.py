@@ -25,6 +25,12 @@ def create_app(config_class="config.DevConfig"):
         output="css/todo.min.css",
         depends="scss/todos/*.scss"
     )
+    edit_scss = Bundle(
+        "scss/todos/edit.scss",
+        filters="libsass,cssmin",
+        output="css/edit.min.css",
+        depends="scss/todos/*.scss"
+    )
     main_scss = Bundle(
     "scss/main/main.scss",
     filters="libsass,cssmin",
@@ -36,13 +42,17 @@ def create_app(config_class="config.DevConfig"):
     assets.register("main_css", main_scss)
     assets.register("auth_css", auth_scss)
     assets.register("todo_css", todo_scss)
+    assets.register("edit_css", edit_scss)
 
     # blueprints...
     from .auth import bp as auth_bp
     from .todo import bp as todo_bp
     from .main import bp as main_bp
+    from .ai import bp as ai_bp
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(todo_bp, url_prefix="/todos")
     app.register_blueprint(main_bp)
+    app.register_blueprint(ai_bp)
+
 
     return app

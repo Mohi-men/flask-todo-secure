@@ -1,0 +1,58 @@
+@import "../variables";
+
+.todo-container {
+  max-width: $container-max-width;
+  margin: 50px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: $box-shadow;
+
+  h2 {
+    color: $heading-color;
+    margin-bottom: 20px;
+  }
+
+  .edit-task-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    input, select {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: $border-radius;
+    }
+
+    input[type="text"] { width: 100%; }
+    input[type="date"] { width: 200px; }
+    select { width: 150px; }
+
+    .completed-check {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.95rem;
+    }
+
+    button {
+      @include button-style($primary-color, $primary-hover-color);
+      width: 150px;
+    }
+
+    .cancel-btn {
+      display: inline-block;
+      padding: 10px 15px;
+      background-color: $danger-color;
+      color: #fff;
+      border-radius: $border-radius;
+      text-decoration: none;
+      text-align: center;
+      width: 100px;
+
+      &:hover {
+        background-color: $danger-hover-color;
+      }
+    }
+  }
+}
